@@ -1,0 +1,50 @@
+classDiagram
+direction LR
+
+class Producto {
+    +int codProducto
+    +string nombre
+    +float precio
+}
+
+class Categoria {
+    +int idCategoria
+    +string nombre
+}
+
+class Inventario {
+    +int idInventario
+    +int cantidadDisponible
+}
+
+class Cliente {
+    +int idCliente
+    +string nombre
+    +string correo
+    +int telefono
+}
+
+class Orden {
+    +int idOrden
+    +date fecha
+    +float total
+}
+
+class DetalleOrden {
+    +int cantidad
+    +float subtotal
+
+}
+
+class Pago {
+    +int idPago
+    +string metodo
+    +float monto
+}
+
+Categoria "1" --> "0..*" Producto
+Producto "1" --> "1" Inventario
+Cliente "1" --> "0..*" Orden
+Orden "1" --> "1..*" DetalleOrden
+DetalleOrden "0..*" --> "1" Producto
+Orden "1" -- "0..1" Pago
