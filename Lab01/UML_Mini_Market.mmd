@@ -5,6 +5,7 @@ class Producto {
     +int codProducto
     +string nombre
     +float precio
+    +bool disponible
 }
 
 class Categoria {
@@ -21,17 +22,26 @@ class Cliente {
     +int idCliente
     +string nombre
     +string correo
-    +int telefono
+    +string telefono
+    +date fechaRegistro
+    +bool activo
+    registrar() : void
+    editarPerfil() : void
 }
 
 class Orden {
     +int idOrden
+    +int idCliente_FK
     +date fecha
     +float total
+    +string estado
 }
 
 class DetalleOrden {
+    +int idDetalle
+    +int codProducto_FK
     +int cantidad
+    +float precioUnitario
     +float subtotal
 
 }
@@ -40,6 +50,8 @@ class Pago {
     +int idPago
     +string metodo
     +float monto
+    +date fecha
+    +string estado
 }
 
 Categoria "1" --> "0..*" Producto
