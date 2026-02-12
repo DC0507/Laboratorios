@@ -1,6 +1,11 @@
     body{
-      background-color: rgba(0, 0, 0, 0.623);
+      background-color: rgba(37, 133, 34, 0.671);
     }
+
+    .form-group {
+      padding-bottom: 10px;
+    }
+
     .form-group label {
       display: block;
       margin-left: 5px;
@@ -10,17 +15,50 @@
     .form-input {
       width: 100%;
       padding: 10px 0;
+      margin: 3px 0;
       border: 1px solid #ccc;
       border-radius: 4px;
     }
 
     .submit-button {
       padding: 10px 50px;
+      margin-top: 5px;
       border-radius: 15px;
       transition: background-color 0.3s ease;
     }
 
     .submit-button:hover {
-      background-color: #2563eb;
+      background-color: #28aa9f;
       /* Un azul más oscuro al pasar el mouse */
+    }
+
+    .title{
+        text-align: center;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+    }
+    #main-title{
+        font-size: 2.5em;
+        margin-top: 1em;
+        margin-bottom: 0.2em;
+    }
+
+    .nav-list {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+    .menu-item {
+        margin: 0 15px;
+        background-color: #333;
+        padding: 10px 20px;
+        border-radius: 5px;
+    }
+
+    .menu-item a {
+        color: white;
+        text-decoration: none;
     }
