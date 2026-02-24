@@ -20,7 +20,11 @@
   <body>
     <div>
       <h1>An animated element</h1>
-      <div class="accordion accordion-flush" id="accordionFlushExample">
+      <div
+        class="accordion accordion-flush my-5"
+        data-bs-theme="dark"
+        id="accordionFlushExample"
+      >
         <div class="accordion-item">
           <h2 class="accordion-header">
             <button
@@ -129,41 +133,65 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container-fluid">
       <h1>Lab04</h1>
       <p>container-fluid</p>
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col">One of three columns</div>
-          <div class="col">One of three columns</div>
-          <div class="col">One of three columns</div>
-        </div>
-        <div class="row">
-          <div class="col-12 col-md-6 col-lg-4">Responsive</div>
-          <div class="col-sm-4">col-sm-4</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-4">col-sm-4</div>
-          <div class="col-sm-2">col-sm-2</div>
-        </div>
-        <div class="row">
-          <div class="col-sm">col-sm</div>
-          <div class="col-sm">col-sm</div>
-          <div class="col-sm">col-sm</div>
-        </div>
+      <div class="row">
+        <div class="col">One of three columns</div>
+        <div class="col">One of three columns</div>
+        <div class="col">One of three columns</div>
+      </div>
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">Responsive</div>
+        <div class="col-sm-4">col-sm-4</div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">col-sm-4</div>
+        <div class="col-sm-2">col-sm-2</div>
+      </div>
+      <div class="row">
+        <div class="col-sm">col-sm</div>
+        <div class="col-sm">col-sm</div>
+        <div class="col-sm">col-sm</div>
       </div>
     </div>
 
-    <div>
-      <label for="name">Nombre</label>
-      <input type="text" name="name" id="name" />
-      <sub>Enter your full name.</sub>
-      <label for="email">Email</label>
-      <input type="email" name="email" id="email" />
-      <sub>We'll never share your email with anyone else.</sub>
-      <label for="pws">Contraseña</label>
-      <input type="password" name="pws" id="pws" />
-      <button type="submit">Submit</button>
+    <div class="container-fluid">
+      <div class="row align-items-center mt-4">
+        <div class="col-6">
+          <label for="name">Nombre</label>
+        </div>
+        <div class="col-3">
+          <label for="email">Email</label>
+        </div>
+        <div class="col-auto">
+          <label for="pws">Contraseña</label>
+        </div>
+      </div>
+      <div class="row align-items-center mt-4">
+        <div class="col-6">
+          <input type="text" name="name" id="name" class="form-control" />
+        </div>
+        <div class="col-3">
+          <input type="email" name="email" id="email" class="form-control" />
+        </div>
+        <div class="col-auto">
+          <input type="password" name="pws" id="pws" class="form-control" />
+        </div>
+      </div>
+      <div class="row align-items-center mt-4">
+        <div class="col-6">
+          <p class="small text-muted">Enter your full name.</p>
+        </div>
+        <div class="col-6">
+          <p class="small text-muted">
+            We'll never share your email with anyone else.
+          </p>
+        </div>
+      </div>
+      <div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
     </div>
   </body>
 </html>
