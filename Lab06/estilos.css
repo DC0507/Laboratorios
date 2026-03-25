@@ -15,7 +15,7 @@ body {
 }
 
 .container {
-  max-width: 980px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 16px;
 }
@@ -197,7 +197,7 @@ table button {
   white-space: nowrap;
 }
 
-.btnActualizar {
+.btnEditar {
   background: var(--accent);
   color: #05323A;
 }
@@ -243,4 +243,10 @@ table button {
 
 .btn-inline:active {
   transform: translateY(-50%);
+}
+
+#tituloForm {
+  margin: 0 0 12px;
+  font-size: 18px;
+  font-weight: 800;
 }

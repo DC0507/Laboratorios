@@ -13,10 +13,13 @@ const btnLoad = document.getElementById("btnLoad");
 // Campo de búsqueda
 const txtSearch = document.getElementById("txtSearch");
 //Formulario
+const tituloForm = document.getElementById("tituloForm");
+const txtId = document.getElementById("txtId");
 const txtNombre = document.getElementById("txtNombre");
 const txtApellido = document.getElementById("txtApellido");
 const txtCorreo = document.getElementById("txtCorreo");
 const txtCarrera = document.getElementById("txtCarrera");
+const txtFechaNac = document.getElementById("txtFechaNac");
 // Tabla
 const tbody = document.getElementById("tbodyStudents");
 
@@ -40,19 +43,41 @@ tbody.addEventListener("click", async (e) => {
     await eliminarEstudiante(id);
   }
 });
+tbody.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("btnEditar")) {
+    const id = e.target.getAttribute("data-id");
+    const { data, error } = await supabase
+      .from("estudiantes")
+      .select("*")
+      .eq("id", id)
+      .single();
 
-// funcion de flecha
-// const consultarEstudiantes = async () => {};
-// funcion tradicional
-// function consultarEstudiantes() {}
+    if (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Error al cargar estudiante'
+      });
+      return;
+    } else {
+      txtNombre.value = data.nombre ?? "";
+      txtApellido.value = data.apellido ?? "";
+      txtCorreo.value = data.correo ?? "";
+      txtCarrera.value = data.carrera ?? "";
+      txtFechaNac.value = data.birthdate ?? "";
+    }
+    btnAdd.textContent = "Actualizar";
+    tituloForm.textContent = "Editar Estudiante";
+    txtId.value = id;
 
-// let y const
-// let x = 10;
-// x = 20;
-// const y = 30;
-// y = 40; // error, no se puede reasignar una constante
-// var z = 50;
-// var z = 60; // no error, var permite redeclarar la misma variable
+    // Scroll to the form
+    document.getElementById("header").scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+});
 
 //****************************************
 //Funciones
@@ -61,7 +86,9 @@ const consultarEstudiantes = async () => {
   // usamos el cliente de Supabase para hacer una consulta a la tabla "estudiantes"
   // json: { "data": [], "error": null }
   const search = txtSearch.value.trim() || ""; // si el valor es vacío, se asigna una cadena vacía
-  const query = supabase.from("estudiantes").select("id,nombre,apellido,correo,carrera");
+  const query = supabase
+    .from("estudiantes")
+    .select("id,nombre,apellido,correo,carrera,birthdate");
 
   // SEBASTIAN JESUS
   if (search.length > 0) {
@@ -72,7 +99,11 @@ const consultarEstudiantes = async () => {
 
   if (error) {
     console.error(error);
-    alert("Error cargando estudiantes");
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error cargando estudiantes'
+    });
     return;
   }
 
@@ -89,8 +120,9 @@ const consultarEstudiantes = async () => {
         <td>${r.apellido ?? ""}</td>
         <td>${r.correo ?? ""}</td>
         <td>${r.carrera ?? ""}</td>
+        <td>${r.birthdate ?? ""}</td>
         <td>
-          <button class="btnActualizar" data-id="${r.id}">Actualizar</button>
+          <button class="btnEditar" data-id="${r.id}">Editar</button>
           <button class="btnEliminar" data-id="${r.id}">Eliminar</button>
         </td>
       `;
@@ -105,43 +137,116 @@ const guardarEstudiante = async () => {
     apellido: txtApellido.value.trim(),
     correo: txtCorreo.value.trim(),
     carrera: txtCarrera.value.trim(),
+    birthdate: txtFechaNac.value,
   };
 
-  if (!estudiante.nombre || !estudiante.apellido || !estudiante.correo || !estudiante.carrera) {
-    alert("Por favor, complete todos los campos");
+  if (
+    !estudiante.nombre ||
+    !estudiante.apellido ||
+    !estudiante.correo ||
+    !estudiante.carrera ||
+    !estudiante.birthdate
+  ) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos incompletos',
+      text: 'Por favor, complete todos los campos'
+    });
     return;
   }
 
-  const { error } = await supabase.from("estudiantes").insert([estudiante]);
+  let result;
+  let successMessage;
 
-  if (error) {
-    console.error(error);
-    alert("Error guardando estudiante");
-    return;
+  try {
+    if (txtId.value) {
+      // Actualizar estudiante existente
+      result = await supabase
+        .from("estudiantes")
+        .update(estudiante)
+        .eq("id", txtId.value);
+      successMessage = "Estudiante actualizado exitosamente";
+    } else {
+      // Insertar nuevo estudiante
+      result = await supabase.from("estudiantes").insert([estudiante]);
+      successMessage = "Estudiante guardado exitosamente";
+    }
+
+    const { error } = result;
+    if (error) {
+      console.error(error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de base de datos',
+        text: txtId.value ? "Error actualizando estudiante" : "Error guardando estudiante"
+      });
+      return;
+    }
+
+    Swal.fire({
+      icon: 'success',
+      title: '¡Éxito!',
+      text: successMessage,
+      timer: 2000,
+      showConfirmButton: false
+    });
+    // Limpiar el formulario
+    limpiarFormulario();
+    consultarEstudiantes();
+  } catch (err) {
+    console.error(err);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error inesperado',
+      text: err.message
+    });
   }
-
-  alert("Estudiante guardado exitosamente");
-  // Limpiar el formulario
-  txtNombre.value = "";
-  consultarEstudiantes();
 };
 
 const eliminarEstudiante = async (id) => {
-  if (!confirm("¿Está seguro de eliminar este estudiante?")) return;
+  const result = await Swal.fire({
+    title: '¿Está seguro?',
+    text: '¿Está seguro de eliminar este estudiante?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!result.isConfirmed) return;
+
   const { error } = await supabase.from("estudiantes").delete().eq("id", id);
 
   if (error) {
     console.error(error);
-    alert("Error al eliminar");
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'Error al eliminar'
+    });
   } else {
+    Swal.fire({
+      icon: 'success',
+      title: 'Eliminado',
+      text: 'Estudiante eliminado exitosamente',
+      timer: 1500,
+      showConfirmButton: false
+    });
     consultarEstudiantes();
   }
 };
 
 const limpiarFormulario = () => {
+  txtId.value = "";
   txtNombre.value = "";
   txtApellido.value = "";
   txtCorreo.value = "";
   txtCarrera.value = "";
+  txtFechaNac.value = "";
+  if (btnAdd.textContent === "Actualizar") {
+    btnAdd.textContent = "Agregar";
+    tituloForm.textContent = "Agregar Estudiante";
+  }
 };
- 
