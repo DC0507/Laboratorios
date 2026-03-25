@@ -212,3 +212,35 @@ table button {
   gap: 10px;
   justify-content: flex-end;
 }
+
+
+.input-with-action {
+  position: relative;
+  width: 100%;
+}
+
+.input-with-action input {
+  width: 100%;
+  padding-right: 88px;
+  box-sizing: border-box;
+}
+
+.btn-inline {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 8px;
+  font-size: 16px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-inline:active {
+  transform: translateY(-50%);
+}

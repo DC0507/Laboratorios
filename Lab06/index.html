@@ -16,7 +16,7 @@
       <!-- controles -->
       <div class="card">
         <form action="" method="post" id="studentForm">
-                  <div class="controls">
+          <div class="controls">
           <div class="field">
             <label for="txtNombre">Nombre:</label>
             <input type="text" id="txtNombre" placeholder="Ingrese el nombre del estudiante" required/>
@@ -35,24 +35,18 @@
           </div>
           <div class="field buttons">
             <button id="btnAdd" class="btn btn-success" type="submit">Agregar</button>
-            <button id="btnCancel" class="btn btn-success" type="submit">Cancelar</button>
+            <button id="btnCancel" class="btn btn-success" type="button">Cancelar</button>
           </div>
         </div>
         </form>
       </div>
       <div class="card">
         <div class="field">
-          <input
-            type="text"
-            id="txtSearch"
-            placeholder="Buscar estudiante por nombre"
-          />
-          <button id="btnLoad" class="btn btn-primary" type="button">
-            Consultar
-          </button>
-          <button id="btnClear" class="btn btn-secondary" type="button">
-            Limpiar
-          </button>
+          <div class="input-with-action">
+            <input type="text" id="txtSearch" placeholder="Buscar estudiante por nombre" />
+            <button id="btnClear" class="btn btn-secondary btn-inline" type="button" aria-label="Limpiar" title="Limpiar">&times;</button>
+          </div>
+          <button id="btnLoad" class="btn btn-primary" type="button">Consultar</button>
         </div>
       </div>
       <!-- table -->
@@ -63,15 +57,15 @@
               <tr>
                 <!--th>ID</th-->
                 <th>Nombre</th>
-              <th>Apellido</th>
-              <th>Correo</th>
-              <th>Carrera</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="tbodyStudents"></tbody>
-        </table>
-      </div>
+                <th>Apellido</th>
+                <th>Correo</th>
+                <th>Carrera</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyStudents"></tbody>
+          </table>
+        </div>
     </div>
     <script src="./app.js" type="module"></script>
   </body>

@@ -2,11 +2,15 @@
 // este cliente ya está configurado con la URL y la clave de acceso a nuestra instancia de Supabase
 import { supabase } from "./supabase.js";
 
-// obtenemos referencias a los elementos del DOM que vamos a usar
-const btnClean = document.getElementById("btnClean");
+//****************************************
+// Referencias a elementos del DOM
+//****************************************
+// Botones
+const btnClear = document.getElementById("btnClear");
 const btnAdd = document.getElementById("btnAdd");
 const btnCancel = document.getElementById("btnCancel");
 const btnLoad = document.getElementById("btnLoad");
+// Campo de búsqueda
 const txtSearch = document.getElementById("txtSearch");
 //Formulario
 const txtNombre = document.getElementById("txtNombre");
@@ -16,9 +20,26 @@ const txtCarrera = document.getElementById("txtCarrera");
 // Tabla
 const tbody = document.getElementById("tbodyStudents");
 
-//window.addEventListener("load", () => consultarEstudiantes());
+//Consultar estudiantes al cargar la página
+window.onload = () => {
+  consultarEstudiantes();
+};
+//****************************************
+//Eventos
+//****************************************
 btnLoad.addEventListener("click", async () => consultarEstudiantes());
 btnAdd.addEventListener("click", async () => guardarEstudiante());
+btnClear.addEventListener("click", async () => {
+  txtSearch.value = "";
+  await consultarEstudiantes();
+});
+btnCancel.addEventListener("click", async () => limpiarFormulario());
+tbody.addEventListener("click", async (e) => {
+  if (e.target.classList.contains("btnEliminar")) {
+    const id = e.target.getAttribute("data-id");
+    await eliminarEstudiante(id);
+  }
+});
 
 // funcion de flecha
 // const consultarEstudiantes = async () => {};
@@ -33,19 +54,20 @@ btnAdd.addEventListener("click", async () => guardarEstudiante());
 // var z = 50;
 // var z = 60; // no error, var permite redeclarar la misma variable
 
+//****************************************
+//Funciones
+//****************************************
 const consultarEstudiantes = async () => {
   // usamos el cliente de Supabase para hacer una consulta a la tabla "estudiantes"
-  // json: {"data": [], "error": null}
-  const search = txtSearch.value.trim() || ""; // si el valor es vacio, se asigna una cadena vacía
-  let query = supabase
-    .from("estudiantes")
-    .select("id,nombre,apellido,correo,carrera");
+  // json: { "data": [], "error": null }
+  const search = txtSearch.value.trim() || ""; // si el valor es vacío, se asigna una cadena vacía
+  const query = supabase.from("estudiantes").select("id,nombre,apellido,correo,carrera");
 
   // SEBASTIAN JESUS
   if (search.length > 0) {
-    query = query.or(`nombre.ilike.%${search}%,apellido.ilike.%${search}%`);
+    // query.ilike("nombre", `%${search}%`);
+    query.or(`nombre.ilike.%${search}%,apellido.ilike.%${search}%`);
   }
-
   const { data, error } = await query;
 
   if (error) {
@@ -54,14 +76,15 @@ const consultarEstudiantes = async () => {
     return;
   }
 
+  // Limpiando y llenando la tabla con los datos obtenidos
   tbody.innerHTML = "";
 
   // data es un arreglo de objetos, cada objeto representa un estudiante
   data.forEach((r) => {
-    const tr = document.createElement("tr");
+    const tr = document.createElement("tr"); //<tr></tr>
     tr.setAttribute("data-id", r.id);
+    //<td>${r.id ?? ""}</td>
     tr.innerHTML = `
-        <!--td>${r.id ?? ""}</td-->
         <td>${r.nombre ?? ""}</td>
         <td>${r.apellido ?? ""}</td>
         <td>${r.correo ?? ""}</td>
@@ -77,57 +100,48 @@ const consultarEstudiantes = async () => {
 };
 
 const guardarEstudiante = async () => {
-  if (
-    txtNombre.value.trim() === "" ||
-    txtApellido.value.trim() === "" ||
-    txtCorreo.value.trim() === "" ||
-    txtCarrera.value.trim() === ""
-  ) {
-    alert("Por favor, complete todos los campos");
-    return;
-  }
-
   const estudiante = {
     nombre: txtNombre.value.trim(),
     apellido: txtApellido.value.trim(),
     correo: txtCorreo.value.trim(),
     carrera: txtCarrera.value.trim(),
   };
-  
-  let query = supabase.from("estudiantes").insert(estudiante);
-  const { data, error } = await query;
+
+  if (!estudiante.nombre || !estudiante.apellido || !estudiante.correo || !estudiante.carrera) {
+    alert("Por favor, complete todos los campos");
+    return;
+  }
+
+  const { error } = await supabase.from("estudiantes").insert([estudiante]);
 
   if (error) {
     console.error(error);
     alert("Error guardando estudiante");
     return;
   }
+
   alert("Estudiante guardado exitosamente");
+  // Limpiar el formulario
   txtNombre.value = "";
-  txtApellido.value = "";
-  txtCorreo.value = "";
-  txtCarrera.value = "";
   consultarEstudiantes();
 };
 
 const eliminarEstudiante = async (id) => {
-  if (!confirm("¿Está seguro de eliminar este estudiante?")) {
-    return;
-  }
-  const { data, error } = await supabase.from("estudiantes").delete().eq("id", id);
+  if (!confirm("¿Está seguro de eliminar este estudiante?")) return;
+  const { error } = await supabase.from("estudiantes").delete().eq("id", id);
 
   if (error) {
     console.error(error);
-    alert("Error eliminando estudiante");
-    return;
+    alert("Error al eliminar");
+  } else {
+    consultarEstudiantes();
   }
-  alert("Estudiante eliminado exitosamente");
-  consultarEstudiantes();
 };
 
-tbody.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btnEliminar")) {
-    const id = e.target.getAttribute("data-id");
-    eliminarEstudiante(id);
-  }
-});
+const limpiarFormulario = () => {
+  txtNombre.value = "";
+  txtApellido.value = "";
+  txtCorreo.value = "";
+  txtCarrera.value = "";
+};
+ 
